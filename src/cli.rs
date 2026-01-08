@@ -1,10 +1,12 @@
 use crate::memory::{MemoryAllocator, AllocationStrategy};
 use crate::cache::{CacheLevel, ReplacementPolicy};
+use crate::vm::{VirtualMemory, VMState, PageReplacementPolicy};
 use std::io::{self, Write};
 
 pub struct Shell {
     allocator: Option<MemoryAllocator>,
     cache: Option<CacheLevel>, // Phase 3
+    vm: Option<(VirtualMemory, VMState)>,//phase 4
 }
 
 impl Shell {
@@ -12,6 +14,7 @@ impl Shell {
         Shell {
         allocator: None,
         cache: None,
+        vm: None,
     }
     }
 
@@ -164,6 +167,64 @@ impl Shell {
                     println!("Cache not initialized.");
                 }
             }
+
+            "vm_init" => {
+                let va_bits = 32;
+                let page_size = 4096; // 4KB
+                let frames = 8;       // your choice
+                let policy = PageReplacementPolicy::LRU;
+
+                let vm = VirtualMemory::new(va_bits, page_size);
+                let vm_state = VMState::new(vm.num_pages, frames, policy);
+
+                self.vm = Some((vm, vm_state));
+                println!("VM initialized: {}-bit VA, {}B pages, {} frames, policy=LRU", va_bits, page_size, frames);
+            }
+
+            "vm_access" => {
+                if let Some((ref vm, ref mut state)) = self.vm {
+                    if parts.len() != 2 {
+                        println!("Usage: vm_access <addr>");
+                        return;
+                    }
+
+                    // parse hex or decimal
+                    let addr = if parts[1].starts_with("0x") {
+                        u32::from_str_radix(&parts[1][2..], 16).unwrap()
+                    } else {
+                        parts[1].parse::<u32>().unwrap()
+                    };
+
+                    let (vpn, offset) = vm.split_address(addr);
+                    if let Some(pa) = state.translate(vpn, offset) {
+                        println!("VA 0x{:08X} -> PA 0x{:08X}", addr, pa);
+
+                        // AUTO pipeline to cache now
+                        if let Some(ref mut cache) = self.cache {
+                            let hit = cache.access(pa as u64);
+                            if hit {
+                                println!("Cache: HIT");
+                            } else {
+                                println!("Cache: MISS");
+                            }
+                        } else {
+                            println!("(Cache not initialized)");
+                        }
+                    }
+                } else {
+                    println!("VM not initialized.");
+                }
+            }
+
+
+            "vm_stats" => {
+                if let Some((_, ref vm_state)) = self.vm {
+                    vm_state.stats();
+                } else {
+                    println!("VM not initialized.");
+                }
+            }
+
 
 
             _ => println!("Unknown command."),
