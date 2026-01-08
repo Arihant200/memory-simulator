@@ -33,7 +33,6 @@ A user-space memory system simulator implementing physical memory allocators, vi
 
 ---
 
-## 🧠 Architecture Overview
 
 ## 🧠 Architecture Overview
 
