@@ -4,6 +4,9 @@ A user-space memory system simulator implementing physical memory allocators, vi
 
 ---
 
+
+
+
 ## 🚀 Features
 
 ### **Physical Memory Allocation**
@@ -47,6 +50,7 @@ A user-space memory system simulator implementing physical memory allocators, vi
    |         Page Fault Handling           |                 |
    |         Page Replacement (LRU)        |                 |
 ```
+
 
 
 ## 📦 CLI Usage
