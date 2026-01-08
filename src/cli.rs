@@ -106,6 +106,15 @@ impl Shell {
                 }
             }
 
+            "stats" => {
+            if let Some(ref alloc) = self.allocator {
+                alloc.stats();
+            } else {
+                println!("Memory not initialized.");
+            }
+        }
+
+
             _ => println!("Unknown command."),
         }
     }
