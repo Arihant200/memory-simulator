@@ -1,6 +1,6 @@
 mod cli;
 mod memory;
-
+mod cache;
 use cli::Shell;
 
 fn main() {

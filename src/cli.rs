@@ -1,13 +1,18 @@
 use crate::memory::{MemoryAllocator, AllocationStrategy};
+use crate::cache::{CacheLevel, ReplacementPolicy};
 use std::io::{self, Write};
 
 pub struct Shell {
     allocator: Option<MemoryAllocator>,
+    cache: Option<CacheLevel>, // Phase 3
 }
 
 impl Shell {
     pub fn new() -> Self {
-        Shell { allocator: None }
+        Shell {
+        allocator: None,
+        cache: None,
+    }
     }
 
     pub fn run(&mut self) {
@@ -107,12 +112,58 @@ impl Shell {
             }
 
             "stats" => {
-            if let Some(ref alloc) = self.allocator {
-                alloc.stats();
-            } else {
-                println!("Memory not initialized.");
+                if let Some(ref alloc) = self.allocator {
+                    alloc.stats();
+                } else {
+                    println!("Memory not initialized.");
+                }
             }
-        }
+
+            "cache_init" => {
+                if parts.len() < 3 {
+                    println!("Usage: cache_init <l1_size> <l2_size>");
+                    return;
+                }
+
+                let l1 = parts[1].parse::<usize>().unwrap();
+                let l2 = parts[2].parse::<usize>().unwrap();
+
+                // block = 64, assoc = 4, policy = LRU for now
+                self.cache = Some(CacheLevel::new(l1, l2, 64, 4, ReplacementPolicy::LRU));
+                println!("Cache initialized: L1={}B L2={}B block=64B assoc=4 policy=LRU", l1, l2);
+            }
+
+            "cache_access" => {
+                if let Some(ref mut cache) = self.cache {
+                    if parts.len() != 2 {
+                        println!("Usage: cache_access <address>");
+                        return;
+                    }
+
+                    let addr = if parts[1].starts_with("0x") {
+                        u64::from_str_radix(&parts[1][2..], 16).unwrap()
+                    } else {
+                        parts[1].parse::<u64>().unwrap()
+                    };
+
+                    let hit = cache.access(addr);
+                    if hit {
+                        println!("L1 HIT");
+                    } else {
+                        println!("MISS (L1 & L2)");
+                    }
+                } else {
+                    println!("Cache not initialized.");
+                }
+            }
+
+            "cache_stats" => {
+                if let Some(ref cache) = self.cache {
+                    cache.stats();
+                } else {
+                    println!("Cache not initialized.");
+                }
+            }
 
 
             _ => println!("Unknown command."),
