@@ -35,18 +35,20 @@ A user-space memory system simulator implementing physical memory allocators, vi
 
 ## 🧠 Architecture Overview
 
-+-----------+ +---------+ +---------+ +---------+
-| CPU (VA) | --> | VM MMU | --> | Cache | --> | Memory |
-+-----------+ +---------+ +---------+ +---------+
-| | | |
-| | | |
-| Translate VA→PA L1/L2 lookup Frame access
-| | | |
-| Page Fault Handling | |
-| Page Replacement (LRU) | |
+## 🧠 Architecture Overview
 
+```
++-----------+       +---------+       +---------+       +---------+
+| CPU (VA)  |  -->  |  VM MMU |  -->  |  Cache  |  -->  | Memory  |
++-----------+       +---------+       +---------+       +---------+
+   |                   |                   |                 |
+   |                   |                   |                 |
+   |         Translate VA→PA        L1/L2 lookup      Frame access
+   |                   |                   |                 |
+   |         Page Fault Handling           |                 |
+   |         Page Replacement (LRU)        |                 |
+```
 
----
 
 ## 📦 CLI Usage
 
@@ -54,55 +56,63 @@ Start simulator:
 
 cargo run
 
-### Memory Commands
-...
-
+### **Memory Commands**
+```
 init <size>
 set_allocator <first|best|worst>
 malloc <bytes>
 free <id>
 dump
 stats
+```
 
 
-### **VM commands**
 
+### **VM Commands**
+```
 vm_init
 vm_access <address>
 vm_stats
+```
 
 
-### **Cache commands**
 
+### **Cache Commands**
+```
 cache_init <l1_size> <l2_size>
 cache_access <addr>
 cache_stats
+```
+
 
 
 ---
 
 ## 🧪 Example Session
 
-init 1024
-set_allocator first
-malloc 200
-malloc 50
-free 1
-stats
-
+```
+> init 1024
+> set_allocator first
+> malloc 200
+> malloc 50
+> free 1
+> stats
+```
 
 VM + Cache:
 
-cache_init 32768 262144
-vm_init
-vm_access 0x1000
-vm_access 0x1000
-vm_stats
-cache_stats
-
+```
+> cache_init 32768 262144
+> vm_init
+> vm_access 0x1000
+> vm_access 0x1000
+> vm_stats
+> cache_stats
+```
 
 Expected output:
 
+```
 VM Stats:
 Page Faults: 1
 
@@ -111,9 +121,8 @@ Accesses: 2
 Hits: 1
 Misses: 1
 Hit Rate: 50.00%
+```
 
-
----
 
 ## 📊 Metrics & Observability
 
