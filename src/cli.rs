@@ -1,4 +1,6 @@
 use crate::memory::{MemoryAllocator, AllocationStrategy};
+
+
 use crate::cache::{CacheLevel, ReplacementPolicy};
 use crate::vm::{VirtualMemory, VMState, PageReplacementPolicy};
 use std::io::{self, Write};
@@ -37,8 +39,8 @@ impl Shell {
     fn handle(&mut self, cmd: &str) {
         let parts: Vec<&str> = cmd.split_whitespace().collect();
         if parts.is_empty() { return; }
-
-        match parts[0] {
+        let cmd = parts[0].to_lowercase();
+        match cmd.as_str() {
             "init" => {
                 if parts.len() != 2 {
                     println!("Usage: init <size>");

@@ -1,0 +1,7 @@
+vm_init
+vm_access 0x1000
+vm_access 0x2000
+vm_access 0x1000
+vm_access 0xF000
+vm_stats
+exit

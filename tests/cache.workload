@@ -1,0 +1,8 @@
+cache_init 32768 262144
+vm_init
+cache_access 0x1000
+cache_access 0x1004
+cache_access 0x2000
+cache_access 0x1008
+cache_stats
+exit
