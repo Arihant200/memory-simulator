@@ -326,6 +326,18 @@ Example CLI usage:
 
 ---
 
-## 12. Conclusion
+
+## 12. Test Artifacts & Validation
+
+Three predefined workloads are provided to validate allocator, VM, and cache behavior. Each workload drives the simulator via CLI commands and logs the output to `/logs`. Expected correctness conditions are described in `tests/CORRECTNESS.md` and include:
+
+- fragmentation behavior for allocators
+- page fault behavior for virtual memory
+- hit/miss patterns for cache locality
+
+These workloads serve as reproducible functional validation.
+
+
+## 13. Conclusion
 
 This simulator demonstrates how fragmentation, page faults, and cache hit/miss behavior emerge from layered memory mechanisms. While simplified, the design reflects real-world OS and architecture concepts and provides useful metrics for evaluating memory system behavior.

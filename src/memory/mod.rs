@@ -3,4 +3,5 @@ mod strategies;
 mod allocator;
 
 pub use allocator::MemoryAllocator;
-pub use strategies::AllocationStrategy;
+pub use allocator::AllocationStrategy;
+

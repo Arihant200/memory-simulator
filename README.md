@@ -126,6 +126,21 @@ Misses: 1
 Hit Rate: 50.00%
 ```
 
+---
+
+## 🎥 Demo Video
+
+
+
+<p align="center">
+  <a href="https://drive.google.com/file/d/1MDlsJzO9CH_MISBmZOf3ihJ4jcxXkXjI/view?usp=sharing">
+    <img src="https://img.shields.io/badge/Watch%20Demo%20Video-Google%20Drive-blue?logo=google-drive&style=for-the-badge" />
+  </a>
+</p>
+
+> Demonstrates the correctness, internal dynamics, and performance characteristics of the simulator on real workloads.
+
+
 
 ## 📊 Metrics & Observability
 
@@ -170,6 +185,26 @@ cargo run
 
 ---
 
+
+## Testing
+
+The simulator includes predefined workloads located in `/tests`.
+
+
+
+Run all workloads and generate logs:
+
+    ./tests/run_tests.ps1
+
+Logs are written to `/logs` and include:
+
+- alloc.log    (allocation traces + stats)
+- vm.log       (virtual memory traces + page faults)
+- cache.log    (cache access traces + hit/miss stats)
+
+Correctness expectations are documented in `tests/CORRECTNESS.md`.
+
+
 ## 🧱 Tech Stack
 
 - Rust
@@ -178,6 +213,7 @@ cargo run
 - OS Virtual Memory Concepts
 
 ---
+
 
 ## 📄 License
 
